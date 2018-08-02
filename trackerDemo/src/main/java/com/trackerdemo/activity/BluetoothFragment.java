@@ -703,7 +703,7 @@ public class BluetoothFragment extends Fragment implements OnItemClickListener, 
 				tv_date.setText("--");
 			} else {
 				tv_name.setText( bluetooth.getName());
-				tv_date.setText( bluetooth.getDate());
+				tv_date.setText( bluetooth.getDate() );
 			}
 
 		((ViewGroup) view).setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);

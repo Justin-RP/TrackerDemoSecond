@@ -11,8 +11,8 @@ public final class R {
         public static final int none = 0x7f07003d;
         public static final int normal = 0x7f07003e;
         public static final int radio = 0x7f070044;
-        public static final int standard = 0x7f070059;
-        public static final int wrap_content = 0x7f07006a;
+        public static final int standard = 0x7f07005c;
+        public static final int wrap_content = 0x7f07006d;
     }
     public static final class integer {
         public static final int google_play_services_version = 0x7f080001;

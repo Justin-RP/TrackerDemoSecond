@@ -6,6 +6,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.swfinder.entity.Bluetooth;
 import com.swfinder.helper.SwalleLightSQLiteHelper;
 
@@ -17,6 +19,9 @@ public class BluetoothSQLiteClass{
 	Context context;
 	SQLiteDatabase db;
 	SwalleLightSQLiteHelper helper;
+
+	private FirebaseDatabase firebaseDatabase;
+	private DatabaseReference bluetoothListRef;
 
 	public BluetoothSQLiteClass(Context context) {
 		this.context = context;
@@ -103,10 +108,13 @@ public class BluetoothSQLiteClass{
 			String bluetooth_name = cursor.getString(cursor.getColumnIndex("bluetooth_name"));
 			String bluetooth_address = cursor.getString(cursor.getColumnIndex("bluetooth_address"));
 			String bluetooth_toux = cursor.getString(cursor.getColumnIndex("bluetooth_toux"));
+
+
 			
 			bluetooth.setName(bluetooth_name);
 			bluetooth.setAddress(bluetooth_address);
 			bluetooth.setToux(bluetooth_toux);
+			bluetooth.setDate("Database");
 			
 			Log.e("SelectBluetooth", bluetooth_name+"--" + bluetooth_address+ "--" +bluetooth_toux );
 		}

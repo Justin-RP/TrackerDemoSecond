@@ -10,11 +10,14 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.AssetFileDescriptor;
 import android.content.res.Configuration;
+import android.hardware.Camera;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Vibrator;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.Display;
 import android.view.KeyEvent;
@@ -106,8 +109,17 @@ public class MainActivity extends SlidingFragmentActivity implements OnOpenListe
 
     boolean isrun = false; // Whether app is finding device
     boolean isStart = true;
-    boolean isLeftOpen = false; // Whether left menu is opened
+    boolean isLeftOpen = false; // Whether left menu is opene
     boolean isActivity = false; // Whether to quit program
+
+    public boolean bluetooth_sound_settings = false;
+    public boolean bluetooth_flash_settings = false;
+    public boolean bluetooth_vibration_settings = false;
+
+    public boolean isActivated = false;
+
+    Camera camera;
+    Camera.Parameters params;
 
     int x=0;
     int y=0;
@@ -276,12 +288,30 @@ public class MainActivity extends SlidingFragmentActivity implements OnOpenListe
             player.pause();
             player.stop();
             player.reset();
-            AssetFileDescriptor afd = this.getAssets().openFd(pat);
-            player.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
-            player.prepare();
 
-            player.start();
-            player.seekTo(0);
+            isActivated = !isActivated;
+
+            if(bluetooth_sound_settings){
+                AssetFileDescriptor afd = this.getAssets().openFd(pat);
+                player.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
+                player.prepare();
+                player.start();
+                player.seekTo(0);
+            }
+            if(bluetooth_flash_settings){
+                camera = Camera.open();
+                params = camera.getParameters();
+                params.setFlashMode(Camera.Parameters.FLASH_MODE_TORCH);
+                camera.setParameters(params);
+                camera.startPreview();
+            }
+
+            if (bluetooth_vibration_settings){
+                Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                v.vibrate(5000);
+            }
+
+
 
         } catch (Exception e) {
 
@@ -647,6 +677,7 @@ public class MainActivity extends SlidingFragmentActivity implements OnOpenListe
                     bluetoothFragment.lv_bluetooth_preserve.setVisibility(View.VISIBLE);
                     bluetooth = new Bluetooth();
                     bluetooth.setName(device.getName());
+                    bluetooth.setDate("HI");
                     bluetooth.setAddress(device.getAddress());
                     bluetoothSQLiteClass.InsertBluetooth(bluetooth);
                 } else {
@@ -874,6 +905,18 @@ public class MainActivity extends SlidingFragmentActivity implements OnOpenListe
                         if (player_search != null && player_search.isPlaying()) {
                             player_search.stop();
                             player_search.reset();
+                        }
+
+                        if(isActivated){
+                            isActivated = false;
+                            camera = Camera.open();
+                            params = camera.getParameters();
+                            params.setFlashMode(Camera.Parameters.FLASH_MODE_OFF);
+                            camera.setParameters(params);
+                            camera.startPreview();
+
+                            Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                            v.cancel();
                         }
                     }
 
